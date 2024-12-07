@@ -1,10 +1,14 @@
+#pip install websockets
+#pip install requests
+
 import pygame
 import requests
-from flask import Flask, request, jsonify
 
 # Initialize pygame and joystick
 pygame.init()
 pygame.joystick.init()
+
+controller_id=int(input("N° de controller: [1-4] ?"))
 
 if pygame.joystick.get_count() == 0:
     print("No joysticks connected!")
@@ -20,18 +24,63 @@ prev_axis = {}
 prev_buttons = {}
 prev_hats = {}
 
-app = Flask(__name__)
+# Server details
+SERVER_URL = "http://100.127.238.23:5000/controller-input"
+#SERVER_URL = "http://195.15.213.250:5000/controller-input-1"
 
-@app.route('/receive-input', methods=['POST'])
-def receive_input():
-    data = request.json
-    input_number = data.get('inputNumber')
-    if input_number:
-        # Process the input number (1 to 4)
-        print(f"Received input number: {input_number}")
-        # Here you can add code to handle the input and control the joystick
-        return jsonify({'status': 'success'})
-    return jsonify({'status': 'error', 'message': 'Invalid input'})
+# Function to send data to the server
+def send_to_server(data):
+    try:
+        response = requests.post(SERVER_URL, json=data)
+        print(f"Server response: {response.json()}")
+    except Exception as e:
+        print(f"Error sending data: {e}")
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+# Loop to capture input
+try:
+    while True:
+        pygame.event.pump()  # Update event queue
+
+        # Prepare input data
+        input_data = {}
+
+        # Check axes
+        for i in range(joystick.get_numaxes()):
+            axis = joystick.get_axis(i)
+            if i not in prev_axis or abs(axis - prev_axis[i]) > 0.01:
+                input_data[f"axis_{i}"] = axis
+                prev_axis[i] = axis
+
+        # Check buttons
+        for i in range(joystick.get_numbuttons()):
+            button = joystick.get_button(i)
+            if i not in prev_buttons or button != prev_buttons[i]:
+                input_data[f"button_{i}"] = button
+                prev_buttons[i] = button
+
+        # Check hats (D-pad)
+        for i in range(joystick.get_numhats()):
+            hat = joystick.get_hat(i)
+            if i not in prev_hats or hat != prev_hats[i]:
+                input_data[f"hat_{i}"] = hat
+                prev_hats[i] = hat
+
+        # Send data if there are changes
+        if input_data:
+            input_data[f"controller"] = controller_id
+            send_to_server(input_data)
+
+except KeyboardInterrupt:
+    print("Exiting...")
+
+import asyncio
+import websockets
+
+async def handler(websocket, path):
+    async for message in websocket:
+        print(f"Received: {message}")
+
+start_server = websockets.serve(handler, "0.0.0.0", 8765)
+
+asyncio.get_event_loop().run_until_complete(start_server)
+asyncio.get_event_loop().run_forever()

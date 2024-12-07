@@ -8,7 +8,10 @@ import requests
 pygame.init()
 pygame.joystick.init()
 
-controller_id=int(input("N° de controller: [1-4] ?"))
+controller_id=int(input("N° de controller: [1-4] ? "))
+if controller_id < 1 or controller_id > 4:
+    print("Invalid controller ID!")
+    exit()
 
 if pygame.joystick.get_count() == 0:
     print("No joysticks connected!")

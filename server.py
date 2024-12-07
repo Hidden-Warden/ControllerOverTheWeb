@@ -24,23 +24,23 @@ def controller_input():
 
     # Button 1: X button
     button_2_value = data.get('button_2')
-    if button_2_value == 1:
+    if data.get('button_2') == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_X)
-    elif button_2_value is not None:
+    elif data.get('button_2') == 0:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_X)
 
     # Button 2: Y button
     button_3_value = data.get('button_3')
-    if button_3_value == 1:
+    if data.get('button_3') == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_Y)
-    elif button_3_value is not None:
+    elif data.get('button_3') == 0:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_Y)
 
     # Button 3: B button
     button_4_value = data.get('button_1')
-    if button_4_value == 1:
+    if data.get('button_1') == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_B)
-    elif button_4_value is not None:
+    elif data.get('button_1') == 0:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_B)
 
     # D-pad: Up

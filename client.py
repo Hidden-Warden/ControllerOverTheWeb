@@ -47,7 +47,7 @@ try:
         # Check axes
         for i in range(joystick.get_numaxes()):
             axis = joystick.get_axis(i)
-            if i not in prev_axis or abs(axis - prev_axis[i]) > 0.01:
+            if i not in prev_axis or abs(axis - prev_axis[i]) >= 0.01:
                 input_data[f"axis_{i}"] = axis
                 prev_axis[i] = axis
 

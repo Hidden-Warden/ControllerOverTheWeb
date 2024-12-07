@@ -13,31 +13,34 @@ gamepads = {
 @app.route('/controller-input', methods=['POST'])
 def controller_input():
     data = request.json
-    print(f"Received Data: {data}, {type(data)}")  # Debugging
-
     index = data.get('controller')
 
-    if data.get('button_0') == 1:
+    # Button 0
+    button_0_value = data.get('button_0')
+    if button_0_value == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_A)
-    else: #if data.get('button_0') == 0:
+    elif button_0_value is not None:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_A)
 
     # Button 1: X button
-    if data.get('button_2') == 1:
+    button_2_value = data.get('button_2')
+    if button_2_value == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_X)
-    else: #if data.get('button_2') == 0:
+    elif button_2_value is not None:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_X)
 
     # Button 2: Y button
-    if data.get('button_3') == 1:
+    button_3_value = data.get('button_3')
+    if button_3_value == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_Y)
-    else: #if data.get('button_3') == 0:
+    elif button_3_value is not None:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_Y)
 
     # Button 3: B button
-    if data.get('button_1') == 1:
+    button_4_value = data.get('button_1')
+    if button_4_value == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_B)
-    else: #if data.get('button_1') == 0:
+    elif button_4_value is not None:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_B)
 
     # D-pad: Up
@@ -67,52 +70,50 @@ def controller_input():
     # Shoulder buttons: Left
     if data.get('button_4') == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_SHOULDER)
-    else: #if data.get('button_4') == 0:
+    elif data.get('button_4') == 0:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_SHOULDER)
     
     # Shoulder buttons: Right
     if data.get('button_5') == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER)
-    else: #if data.get('button_5') == 0:
+    elif data.get('button_5') == 0:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER)
 
     # Start button
     if data.get('button_7') == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_START)
-    else: #if data.get('button_7') == 0:
+    elif data.get('button_7') == 0:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_START)
     
     # Back button
     if data.get('button_6') == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_BACK)
-    else: #if data.get('button_6') == 0:
+    elif data.get('button_6') == 0:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_BACK)
 
     # Left stick: Press
     if data.get('button_8') == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB)
-    else: #if data.get('button_8') == 0:
+    elif data.get('button_8') == 0:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB)
     
     # Right stick: Press
     if data.get('button_9') == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB)
-    else: #if data.get('button_9') == 0:
+    elif data.get('button_9') == 0:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB)
     
     # Left trigger
-    axis_4_value = data.get('axis_4')
-    if axis_4_value is not None and axis_4_value > 0:
-        gamepads[index].left_trigger(value=int(axis_4_value * 255))
-    else:
-        gamepads[index].left_trigger(value=0)
-    
+    axis_4_value = data.get('axis_4', 0)
+    gamepads[index].left_trigger(value=int(axis_4_value * 255))
+    if axis_4_value <= 0.02:
+        print('axis_4_value RESET')
+
     # Right trigger
-    axis_5_value = data.get('axis_5')
-    if axis_5_value is not None and axis_5_value > 0:
-        gamepads[index].right_trigger(value=int(axis_5_value * 255))
-    else:
-        gamepads[index].right_trigger(value=0)
+    axis_5_value = data.get('axis_5', 0)
+    gamepads[index].right_trigger(value=int(axis_5_value * 255))
+    if axis_5_value <= 0.02:
+        print('axis_5_value RESET')
 
     # Left stick: X-axis and Y-axis
     left_joysticks = [
@@ -124,6 +125,8 @@ def controller_input():
         data.get('axis_1', left_joysticks[index][1]),
     )
     gamepads[index].left_joystick(x_value=int(left_joysticks[index][0] * 32767), y_value=int(left_joysticks[index][1] * -32767))
+    if abs(left_joysticks[index][0]) <= 0.02 or abs(left_joysticks[index][1]) <= 0.02:
+        print('left_joysticks RESET', left_joysticks[index])
 
     # Right stick: X-axis and Y-axis
     right_joysticks = [
@@ -135,6 +138,8 @@ def controller_input():
         data.get('axis_3', right_joysticks[index][1]),
     )
     gamepads[index].right_joystick(x_value=int(right_joysticks[index][0] * 32767), y_value=int(right_joysticks[index][1] * -32767))
+    if abs(right_joysticks[index][0]) <= 0.02 or abs(right_joysticks[index][1]) <= 0.02:
+        print('right_joysticks RESET', right_joysticks[index])
 
     # Update the gamepad state
     gamepads[index].update()

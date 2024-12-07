@@ -112,20 +112,11 @@ def controller_input():
         else:
             gamepad.right_trigger(value=0)
 
-        # Left stick: X-axis and Y-axis
-        axis_0_value = data.get('axis_0')
-        axis_1_value = data.get('axis_1')
-        if axis_0_value is not None:
-            gamepad.left_joystick(x_value=int(axis_0_value * 32767))
-        if axis_1_value is not None:
-            gamepad.left_joystick(y_value=int(axis_1_value * -32767))
-
-
         # Update the gamepad state
         gamepad.update()
 
     # Small delay to simulate human-like interaction
-    time.sleep(0.05)
+    time.sleep(0.01)
 
     return jsonify({"status": "success"})
 

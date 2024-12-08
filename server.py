@@ -14,6 +14,12 @@ gamepads = {
 def controller_input():
     data = request.json
     index = data.get('controller')
+    # Calculate the time difference
+    client_timestamp = data.get('timestamp')
+    server_timestamp = time.time()
+    time_difference = server_timestamp - client_timestamp
+    print(f"Time difference: {time_difference * 1000:.2f} ms")
+
 
     # Button 0
     button_0_value = data.get('button_0')
@@ -104,16 +110,10 @@ def controller_input():
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB)
     
     # Left trigger
-    axis_4_value = data.get('axis_4', 0)
-    gamepads[index].left_trigger(value=int(axis_4_value * 255))
-    if axis_4_value <= 0.02:
-        print('axis_4_value RESET')
+
 
     # Right trigger
-    axis_5_value = data.get('axis_5', 0)
-    gamepads[index].right_trigger(value=int(axis_5_value * 255))
-    if axis_5_value <= 0.02:
-        print('axis_5_value RESET')
+
 
     # Left stick: X-axis and Y-axis
     left_joysticks = [

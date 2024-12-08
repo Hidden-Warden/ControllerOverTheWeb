@@ -1,26 +1,36 @@
 #pip install websockets
 #pip install requests
-
+import sys
+import time
 import pygame
 import requests
+
+
+try:
+    ip=sys.args[1]
+except:
+    print("Usage: python client.py <server_ip>, or input the server IP manually")
+    ip=input("Server IP: ")
 
 # Initialize pygame and joystick
 pygame.init()
 pygame.joystick.init()
 
-controller_id=int(input("N° de controller: [1-4] ? "))
+controller_id=int(input("Controller: [1-4] ? "))
 if controller_id < 1 or controller_id > 4:
-    print("Invalid controller ID!")
+    print("Invalid controller ID")
+    wait = input("Press any key to exit...")
     exit()
 
 if pygame.joystick.get_count() == 0:
-    print("No joysticks connected!")
+    print("No controller connected, exiting...")
+    wait = input("Press any key to exit...")
     exit()
 
 joystick = pygame.joystick.Joystick(0)
 joystick.init()
 
-print(f"Joystick Name: {joystick.get_name()}")
+print(f"Controller Name: {joystick.get_name()}")
 
 # Store previous states
 prev_axis = {}
@@ -28,16 +38,16 @@ prev_buttons = {}
 prev_hats = {}
 
 # Server details
-SERVER_URL = "http://100.127.238.23:5000/controller-input"
-#SERVER_URL = "http://195.15.213.250:5000/controller-input-1"
+SERVER_URL = f'http://{ip}:5000/controller-input'
 
 # Function to send data to the server
 def send_to_server(data):
     try:
+        data['timestamp'] = time.time()
         response = requests.post(SERVER_URL, json=data)
         print(f"Server response: {response.json()}")
     except Exception as e:
-        print(f"Error sending data: {e}")
+        print(f"Error sending data to server: {e}")
 
 # Loop to capture input
 try:

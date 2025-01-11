@@ -125,14 +125,14 @@ while True:
         ## End JoySticks Press
 
         ##Triggers
-        if json_data.get('trigger_left') is not None and json_data.get('trigger_left') > 0:
-            gamepads[index].set_left_trigger(value=int(json_data.get('trigger_left')))
-        elif json_data.get('trigger_left') == 0:
-            gamepads[index].set_left_trigger(value=0)
-        if json_data.get('trigger_right') is not None and json_data.get('trigger_right') > 0:
-            gamepads[index].set_right_trigger(value=int(json_data.get('trigger_right')))
-        elif json_data.get('trigger_right') == 0:
-            gamepads[index].set_right_trigger(value=0)
+        if json_data.get('axis_4') is not None and json_data.get('axis_4') > 0:
+            gamepads[index].left_trigger(value=255)
+        elif json_data.get('axis_4') == -1.0:
+            gamepads[index].left_trigger(value=0)
+        if json_data.get('axis_5') is not None and json_data.get('axis_5') > 0:
+            gamepads[index].right_trigger(value=255)
+        elif json_data.get('axis_5') == -1.0:
+            gamepads[index].right_trigger(value=0)
 
         # Left stick: X-axis and Y-axis
         left_joysticks = [

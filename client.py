@@ -1,16 +1,28 @@
-#pip install websockets
-#pip install requests
 import sys
+import json
 import time
 import pygame
-import requests
-
+import socket
 
 try:
     ip=sys.args[1]
+    port=sys.args[2]
 except:
-    print("Usage: python client.py <server_ip>, or input the server IP manually")
+    print("Usage: python client.py <server_ip> <server_port>, or input the server IP manually, default port is 50621")
     ip=input("Server IP: ")
+    port= 50621
+
+UDP_IP = ip # Replace with the target IP address
+UDP_PORT = port       # Replace with the target port
+
+print(f"Sending UDP packets to {UDP_IP}:{UDP_PORT}")
+
+data = {}
+data['timestamp'] = time.time()
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+pygame.init()
+pygame.joystick.init()
 
 # Initialize pygame and joystick
 pygame.init()
@@ -37,17 +49,14 @@ prev_axis = {}
 prev_buttons = {}
 prev_hats = {}
 
-# Server details
-SERVER_URL = f'http://{ip}:5000/controller-input'
-
 # Function to send data to the server
 def send_to_server(data):
     try:
-        data['timestamp'] = time.time()
-        response = requests.post(SERVER_URL, json=data)
-        print(f"Server response: {response.json()}")
+        data_json = json.dumps(data)
+        sock.sendto(data_json.encode(), (UDP_IP, UDP_PORT))
+        print(f"Sent UDP packet to {UDP_IP}:{UDP_PORT}: {data_json}")
     except Exception as e:
-        print(f"Error sending data to server: {e}")
+        print(f"Failed to send UDP packet: {e}")
 
 # Loop to capture input
 try:
@@ -85,15 +94,5 @@ try:
 
 except KeyboardInterrupt:
     print("Exiting...")
-
-import asyncio
-import websockets
-
-async def handler(websocket, path):
-    async for message in websocket:
-        print(f"Received: {message}")
-
-start_server = websockets.serve(handler, "0.0.0.0", 8765)
-
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+finally:
+    sock.close()

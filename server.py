@@ -21,29 +21,29 @@ def controller_input():
     print(f"Time difference: {time_difference * 1000:.2f} ms")
 
 
-    # Button 0
+    # Button 0: A button
     button_0_value = data.get('button_0')
     if button_0_value == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_A)
     elif button_0_value is not None:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_A)
 
-    # Button 1: X button
+    # Button 2: X button
     button_2_value = data.get('button_2')
     if data.get('button_2') == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_X)
     elif data.get('button_2') == 0:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_X)
 
-    # Button 2: Y button
+    # Button 3: Y button
     button_3_value = data.get('button_3')
     if data.get('button_3') == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_Y)
     elif data.get('button_3') == 0:
         gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_Y)
 
-    # Button 3: B button
-    button_4_value = data.get('button_1')
+    # Button 1: B button
+    button_1_value = data.get('button_1')
     if data.get('button_1') == 1:
         gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_B)
     elif data.get('button_1') == 0:

@@ -3,7 +3,7 @@ import json
 import time
 import socket
 import vgamepad as vg
-from flask import Flask, request, jsonify
+from flask import Flask
 
 
 # Define the UDP IP address and port to listen on
@@ -72,7 +72,6 @@ while True:
             gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_DOWN)
             gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_LEFT)
             gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT)
-            
         ## End D-PAD
 
         ## BUTTONS
@@ -114,6 +113,72 @@ while True:
         elif json_data.get('button_5') == 0:
             gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER)
         ## End Shoulders
+        ## JoySticks Press
+        if json_data.get('button_8') == 1: # Button 8: Left Stick Press
+            gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB)
+        elif json_data.get('button_8') == 0:
+            gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB)
+        if json_data.get('button_9') == 1: # Button 9: Right Stick Press
+            gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB)
+        elif json_data.get('button_9') == 0:
+            gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB)
+        ## End JoySticks Press
+
+        ##Triggers
+        if json_data.get('trigger_left') is not None and json_data.get('trigger_left') > 0:
+            gamepads[index].set_left_trigger(value=int(json_data.get('trigger_left')))
+        elif json_data.get('trigger_left') == 0:
+            gamepads[index].set_left_trigger(value=0)
+        if json_data.get('trigger_right') is not None and json_data.get('trigger_right') > 0:
+            gamepads[index].set_right_trigger(value=int(json_data.get('trigger_right')))
+        elif json_data.get('trigger_right') == 0:
+            gamepads[index].set_right_trigger(value=0)
+
+        # Left stick: X-axis and Y-axis
+        left_joysticks = [
+            (0, 0)
+            for _ in range(len(gamepads))
+        ]
+
+        # Get the new joystick data
+        new_left_x = json_data.get('axis_0', left_joysticks[index][0])
+        new_left_y = json_data.get('axis_1', left_joysticks[index][1])
+
+        # Update only if new values are significant
+        if abs(new_left_x) > 0.02 or abs(new_left_y) > 0.02:
+            left_joysticks[index] = (new_left_x, new_left_y)
+
+        # Apply the joystick state
+        gamepads[index].left_joystick(
+            x_value=int(left_joysticks[index][0] * 32767),
+            y_value=int(left_joysticks[index][1] * -32767)
+        )
+
+        # Debugging output
+        print('Left Joystick:', left_joysticks[index])
+
+        # Right stick: X-axis and Y-axis
+        right_joysticks = [
+            (0, 0)
+            for _ in range(len(gamepads))
+        ]
+
+        # Get the new joystick data
+        new_right_x = json_data.get('axis_2', right_joysticks[index][0])
+        new_right_y = json_data.get('axis_3', right_joysticks[index][1])
+
+        # Update only if new values are significant
+        if abs(new_right_x) > 0.02 or abs(new_right_y) > 0.02:
+            right_joysticks[index] = (new_right_x, new_right_y)
+
+        # Apply the joystick state
+        gamepads[index].right_joystick(
+            x_value=int(right_joysticks[index][0] * 32767),
+            y_value=int(right_joysticks[index][1] * -32767)
+        )
+
+        # Debugging output
+        print('Right Joystick:', right_joysticks[index])
 
         # Update the gamepad state
         gamepads[index].update()  

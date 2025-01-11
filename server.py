@@ -23,7 +23,7 @@ app = Flask(__name__)
 # Initialize the virtual gamepad
 gamepads = {
     key: vg.VX360Gamepad()
-    for key in range(1, 5)
+    for key in range(1, 6)
 }
 
 # Create a UDP socket

@@ -5,8 +5,8 @@ import pygame
 import socket
 
 try:
-    ip=sys.args[1]
-    port=sys.args[2]
+    ip=sys.argv[1]
+    port=sys.argv[2]
 except:
     print("Usage: python client.py <server_ip> <server_port>, or input the server IP manually, default port is 50621")
     ip=input("Server IP: ")

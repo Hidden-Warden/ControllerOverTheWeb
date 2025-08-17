@@ -8,15 +8,17 @@ from flask import Flask
 
 # Define the UDP IP address and port to listen on
 try:
-    ip=sys.args[1]
-    port=sys.args[2]
+    ip = sys.argv[1]
+    port = sys.argv[2]
 except:
-    print("Usage: python client.py <server_ip> <server_port>, or, default ip = 0.0.0.0, port is 50621")
+    print("Usage: python server.py <server_ip> <server_port>, or, default ip = 0.0.0.0, port is 50621")
     ip="0.0.0.0"
-    port= 50621
+    port= 6000
 
-UDP_IP = "0.0.0.0"
-UDP_PORT = 50621
+print(f"Server will listen on {ip}:{port}")
+
+UDP_IP = ip
+UDP_PORT = int(port)
 
 app = Flask(__name__)
 

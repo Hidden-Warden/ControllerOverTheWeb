@@ -16,6 +16,7 @@ except:
     port= 6000
 
 print(f"Server will listen on {ip}:{port}")
+print("If you see no activity, refer to the README.md for troubleshooting steps.")
 
 UDP_IP = ip
 UDP_PORT = int(port)

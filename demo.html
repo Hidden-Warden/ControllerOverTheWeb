@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Controller Input Test</title>
+  <style>
+    body { font-family: sans-serif; background: #f0f0f0; padding: 20px; }
+    #log { white-space: pre; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <h1>🎮 Controller Input Test</h1>
+  <p>Connect a controller and press any button.</p>
+  <div id="log">Waiting for input...</div>
+
+  <script>
+    const log = document.getElementById('log');
+
+    window.addEventListener("gamepadconnected", (e) => {
+      log.textContent = `Controller connected: ${e.gamepad.id}`;
+      updateLoop();
+    });
+
+    window.addEventListener("gamepaddisconnected", (e) => {
+      log.textContent = `Controller disconnected: ${e.gamepad.id}`;
+    });
+
+    function updateLoop() {
+      const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+      if (gamepads[0]) {
+        const gp = gamepads[0];
+        let output = `Controller: ${gp.id}\n\nButtons:\n`;
+        gp.buttons.forEach((b, i) => {
+          output += `Button ${i}: ${b.pressed ? "Pressed" : "Released"}\n`;
+        });
+        output += "\nAxes:\n";
+        gp.axes.forEach((a, i) => {
+          output += `Axis ${i}: ${a.toFixed(2)}\n`;
+        });
+        log.textContent = output;
+      }
+      requestAnimationFrame(updateLoop);
+    }
+  </script>
+</body>
+</html>

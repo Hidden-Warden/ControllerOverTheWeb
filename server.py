@@ -1,19 +1,21 @@
+import os
 import sys
 import json
 import time
 import socket
 import vgamepad as vg
 from flask import Flask
+from dotenv import load_dotenv, dotenv_values
 
-
+load_dotenv()
 # Define the UDP IP address and port to listen on
 try:
-    ip = sys.argv[1]
-    port = sys.argv[2]
+    ip = os.getenv("SERVER_IP") or sys.argv[1]
+    port = os.getenv("SERVER_PORT") or sys.argv[2]
 except:
     print("Usage: python server.py <server_ip> <server_port>, or, default ip = 0.0.0.0, port is 50621")
     ip="0.0.0.0"
-    port= 6000
+    port= 50621
 
 print(f"Server will listen on {ip}:{port}")
 print("If you see no activity, refer to the README.md for troubleshooting steps.")

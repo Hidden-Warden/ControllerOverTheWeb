@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Controller Input</title>
+  <style>
+    body { font-family: sans-serif; background: #f0f0f0; padding: 20px; }
+    #log { white-space: pre; font-family: monospace; }
+    #connectForm { margin-bottom: 1em; }
+  </style>
+</head>
+<body>
+  <h1>🎮 Controller Input</h1>
+  <form id="connectForm">
+    <label>IP: <input id="ip" type="text" value="192.168.1."></label>
+    <label>Port: <input id="port" type="text" value=""></label>
+    <button type="submit">Connect</button>
+  </form>
+  <div id="log">Waiting for input...</div>
+
+  <script>
+let ws = null;
+const log = document.getElementById('log');
+const form = document.getElementById('connectForm');
+const ipInput = document.getElementById('ip');
+const portInput = document.getElementById('port');
+
+let prevButtons = [];
+let prevAxes = [];
+
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  if (ws && ws.readyState === 1) ws.close();
+  const ip = ipInput.value;
+  const port = portInput.value;
+  ws = new WebSocket(`ws://${ip}:${port}`);
+  ws.onopen = () => log.textContent = "WebSocket connected. Waiting for controller...";
+  ws.onerror = (e) => log.textContent = "WebSocket error: " + (e.message || e);
+  ws.onclose = () => log.textContent = "WebSocket closed.";
+});
+
+window.addEventListener("gamepadconnected", (e) => {
+  log.textContent = `Controller connected: ${e.gamepad.id}`;
+  updateLoop();
+});
+
+window.addEventListener("gamepaddisconnected", (e) => {
+  log.textContent = `Controller disconnected: ${e.gamepad.id}`;
+});
+
+function updateLoop() {
+  const gamepads = navigator.getGamepads ? navigator.getGamepads() : [];
+  if (gamepads[0]) {
+    const gp = gamepads[0];
+    let output = `Controller: ${gp.id}\n\nButtons:\n`;
+    let data = {};
+    let changed = false;
+
+    // Buttons
+    gp.buttons.forEach((b, i) => {
+      output += `Button ${i}: ${b.pressed ? "Pressed" : "Released"}\n`;
+      data[`button_${i}`] = b.pressed ? 1 : 0;
+      if (prevButtons[i] !== (b.pressed ? 1 : 0)) changed = true;
+    });
+
+    // Axes
+    output += "\nAxes:\n";
+    gp.axes.forEach((a, i) => {
+      const val = Number(a.toFixed(2));
+      output += `Axis ${i}: ${val}\n`;
+      data[`axis_${i}`] = val;
+      if (prevAxes[i] !== val) changed = true;
+    });
+
+    // Controller ID (optional, default to 1)
+    data["controller"] = 1;
+
+    log.textContent = output;
+
+    if (changed && ws && ws.readyState === 1) {
+      ws.send(JSON.stringify(data));
+      prevButtons = gp.buttons.map(b => b.pressed ? 1 : 0);
+      prevAxes = gp.axes.map(a => Number(a.toFixed(2)));
+    }
+  }
+  requestAnimationFrame(updateLoop);
+}
+  </script>
+</body>
+</html>

@@ -98,13 +98,13 @@ while True:
             gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_Y)
         ## End BUTTONS
         ## Start and Back buttons
-        if json_data.get('button_6') == 1: # Button 6: Back button
+        if json_data.get('button_8') == 1: # Button 6: Back button
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_BACK)
-        elif json_data.get('button_6') == 0:
+        elif json_data.get('button_8') == 0:
             gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_BACK)
-        if json_data.get('button_7') == 1: # Button 7: Start button
+        if json_data.get('button_9') == 1: # Button 7: Start button
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_START)
-        elif json_data.get('button_7') == 0:
+        elif json_data.get('button_9') == 0:
             gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_START)
         ## End Start and Back buttons
 
@@ -119,24 +119,24 @@ while True:
             gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_SHOULDER)
         ## End Shoulders
         ## JoySticks Press
-        if json_data.get('button_8') == 1: # Button 8: Left Stick Press
+        if json_data.get('button_10') == 1: # Button 8: Left Stick Press
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB)
-        elif json_data.get('button_8') == 0:
+        elif json_data.get('button_10') == 0:
             gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_LEFT_THUMB)
-        if json_data.get('button_9') == 1: # Button 9: Right Stick Press
+        if json_data.get('button_11') == 1: # Button 9: Right Stick Press
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB)
-        elif json_data.get('button_9') == 0:
+        elif json_data.get('button_11') == 0:
             gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_RIGHT_THUMB)
         ## End JoySticks Press
 
         ##Triggers
-        if json_data.get('axis_4') is not None and json_data.get('axis_4') > 0:
+        if json_data.get('button_6') == 1:
             gamepads[index].left_trigger(value=255)
-        elif json_data.get('axis_4') == -1.0:
+        elif json_data.get('button_6') == 0:
             gamepads[index].left_trigger(value=0)
-        if json_data.get('axis_5') is not None and json_data.get('axis_5') > 0:
+        if json_data.get('button_7') == 1:
             gamepads[index].right_trigger(value=255)
-        elif json_data.get('axis_5') == -1.0:
+        elif json_data.get('button_7') == 0:
             gamepads[index].right_trigger(value=0)
 
         # Left stick: X-axis and Y-axis

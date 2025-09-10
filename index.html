@@ -12,28 +12,16 @@
 <body>
   <h1 style="display: flex; align-items: center; justify-content: center; margin: 0 auto; max-width: 600px; text-align: center;">🎮 Controller Input</h1>
   <form id="connectForm">
-    <div style="display: flex; flex-direction: column; gap: 1em;">
-      <label style="font-size: 1.2em;">
-      IP: <input id="ip" type="text" value="" style="font-size: 1.2em; width: 100%;">
-      </label>
-      <label style="font-size: 1.2em;">
-      Bridge port: <input id="port" type="text" value="" style="font-size: 1.2em; width: 100%;">
-      </label>
-      <label style="font-size: 1.2em;">
-      Manette n°: 
-      <select id="controller" style="font-size: 1.2em; width: 100%;">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-      </select>
-      </label>
-    </div></label>
-  </form>
-  <button type="submit" style="width: 100%; height: 100px">Connect</button>
-  <div id="log" style="display: flex; align-items: center; justify-content: center; margin: 0 auto; max-width: 600px; text-align: center;">
-    Waiting for input...
-  </div>
+    <div style="display: flex; flex-direction: column; gap: 0.5em; align-items: center;">
+      <label style="width: 100%; text-align: center;">IP: <input id="ip" type="text" value="192.168.1."></label>
+      <label style="width: 100%; text-align: center;">Bridge port: <input id="port" type="text" value=""></label>
+      <label style="width: 100%; text-align: center;">Controller: <input id="controller" type="text" value="1"></label>
+    </div>
+    <button type="submit" style="width: 100%; height: 100px">Connect</button>
+    </form>
+    <div id="log" style="display: flex; align-items: center; justify-content: center; margin: 0 auto; max-width: 600px; text-align: center;">
+      Waiting for input...
+    </div>
 
   <script>
 let ws = null;
@@ -42,6 +30,17 @@ const form = document.getElementById('connectForm');
 const ipInput = document.getElementById('ip');
 const portInput = document.getElementById('port');
 const controllerInput = document.getElementById('controller');
+
+// Restore saved values on page load
+ipInput.value = localStorage.getItem('ip') || '';
+portInput.value = localStorage.getItem('port') || '';
+
+ipInput.addEventListener('input', () => {
+  localStorage.setItem('ip', ipInput.value);
+});
+portInput.addEventListener('input', () => {
+  localStorage.setItem('port', portInput.value);
+});
 
 let prevButtons = [];
 let prevAxes = [];
@@ -103,32 +102,6 @@ function updateLoop() {
   }
   requestAnimationFrame(updateLoop);
 }
-
-let wakeLock = null;
-
-async function requestWakeLock() {
-  try {
-    if ('wakeLock' in navigator) {
-      wakeLock = await navigator.wakeLock.request('screen');
-      wakeLock.addEventListener('release', () => {
-        console.log('Screen Wake Lock released');
-      });
-      console.log('Screen Wake Lock acquired');
-    }
-  } catch (err) {
-    console.error(`${err.name}, ${err.message}`);
-  }
-}
-
-// Request wake lock on page load
-requestWakeLock();
-
-// Optional: Re-acquire wake lock if page becomes visible again
-document.addEventListener('visibilitychange', () => {
-  if (wakeLock !== null && document.visibilityState === 'visible') {
-    requestWakeLock();
-  }
-});
   </script>
 </body>
 </html>

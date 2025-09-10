@@ -13,7 +13,8 @@
   <h1>🎮 Controller Input</h1>
   <form id="connectForm">
     <label>IP: <input id="ip" type="text" value="192.168.1."></label>
-    <label>Port: <input id="port" type="text" value=""></label>
+    <label>Bridge port: <input id="port" type="text" value=""></label>
+    <label>Controller: <input id="controller" type="text" value="1"></label>
     <button type="submit">Connect</button>
   </form>
   <div id="log">Waiting for input...</div>
@@ -24,6 +25,7 @@ const log = document.getElementById('log');
 const form = document.getElementById('connectForm');
 const ipInput = document.getElementById('ip');
 const portInput = document.getElementById('port');
+const controllerInput = document.getElementById('controller');
 
 let prevButtons = [];
 let prevAxes = [];
@@ -73,7 +75,7 @@ function updateLoop() {
     });
 
     // Controller ID (optional, default to 1)
-    data["controller"] = 1;
+    data["controller"] = parseInt(controllerInput.value) || 1;
 
     log.textContent = output;
 

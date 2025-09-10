@@ -52,27 +52,27 @@ while True:
             print(f"Time between packets: {time_difference} ms")
         
         ##D-PAD
-        if json_data.get('hat_0') == [0, 1]: # D-PAD Up
+        if json_data.get('hat_0') == [0, 1] or json_data.get('button_12') == 1: # D-PAD Up
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_UP)
-        elif json_data.get('hat_0') == [0, -1]: # D-PAD Down
+        elif json_data.get('hat_0') == [0, -1] or json_data.get('button_13') == 1: # D-PAD Down
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_DOWN)
-        elif json_data.get('hat_0') == [-1, 0]: # D-PAD Left
+        elif json_data.get('hat_0') == [-1, 0] or json_data.get('button_14') == 1: # D-PAD Left
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_LEFT)
-        elif json_data.get('hat_0') == [1, 0]: # D-PAD Right
+        elif json_data.get('hat_0') == [1, 0] or json_data.get('button_15') == 1: # D-PAD Right
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT)
-        elif json_data.get('hat_0') == [-1, 1]: # D-PAD Up-Left
+        elif json_data.get('hat_0') == [-1, 1] or (json_data.get('button_12') == 1 and json_data.get('button_14') == 1): # D-PAD Up-Left
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_UP)
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_LEFT)
-        elif json_data.get('hat_0') == [1, 1]: # D-PAD Up-Right
+        elif json_data.get('hat_0') == [1, 1] or (json_data.get('button_12') == 1 and json_data.get('button_15') == 1): # D-PAD Up-Right
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_UP)
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT)
-        elif json_data.get('hat_0') == [-1, -1]: # D-PAD Down-Left
+        elif json_data.get('hat_0') == [-1, -1] or (json_data.get('button_12') == 1 and json_data.get('button_13') == 1): # D-PAD Down-Left
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_DOWN)
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_LEFT)
-        elif json_data.get('hat_0') == [1, -1]: # D-PAD Down-Right
+        elif json_data.get('hat_0') == [1, -1] or (json_data.get('button_12') == 1 and json_data.get('button_13') == 1):
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_DOWN)
             gamepads[index].press_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_RIGHT)
-        elif json_data.get('hat_0') == [0, 0]:
+        elif json_data.get('hat_0') == [0, 0] or (json_data.get('button_12') == 0 and json_data.get('button_13') == 0 and json_data.get('button_14') == 0 and json_data.get('button_15') == 0):
             gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_UP)
             gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_DOWN)
             gamepads[index].release_button(button=vg.XUSB_BUTTON.XUSB_GAMEPAD_DPAD_LEFT)

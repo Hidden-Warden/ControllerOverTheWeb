@@ -103,6 +103,32 @@ function updateLoop() {
   }
   requestAnimationFrame(updateLoop);
 }
+
+let wakeLock = null;
+
+async function requestWakeLock() {
+  try {
+    if ('wakeLock' in navigator) {
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => {
+        console.log('Screen Wake Lock released');
+      });
+      console.log('Screen Wake Lock acquired');
+    }
+  } catch (err) {
+    console.error(`${err.name}, ${err.message}`);
+  }
+}
+
+// Request wake lock on page load
+requestWakeLock();
+
+// Optional: Re-acquire wake lock if page becomes visible again
+document.addEventListener('visibilitychange', () => {
+  if (wakeLock !== null && document.visibilityState === 'visible') {
+    requestWakeLock();
+  }
+});
   </script>
 </body>
 </html>
